@@ -11,9 +11,9 @@ func main() {
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 	router.Static("/", "./public")
 	router.POST("/upload", func(c *gin.Context) {
-		//utiles.ImportExcel(c)
-		utiles.GuardarFilas("f:\\netflix.xls", c)
+		utiles.ImportExcel(c)
+		//utiles.GuardarFilas("f:\\netflix.xls", c)
 		//utiles.ExampleDB_Model(c)
 	})
-	router.Run(":9090")
+	router.Run(":9900")
 }

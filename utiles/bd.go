@@ -1,22 +1,23 @@
 package utiles
 
 import (
-	"fmt"
-	"net/http"
+	//"fmt"
+	//"net/http"
 
-	"github.com/gin-gonic/gin"
+	//"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
+	//"github.com/go-pg/pg/orm"
 )
 
-func ExampleDB_Model(c *gin.Context) {
+func ExampleDB_Model() {
 	db := pg.Connect(&pg.Options{
-		Addr:     "localhost:5432",
-		User:     "postgres",
-		Password: "root",
-		Database: "example",
+		Addr:     "192.168.76.233:5432",
+		User:     "dgevyl",
+		Password: "qwerty",
+		Database: "dgevyl",
 	})
 	defer db.Close()
+}
 	/*
 		err := createSchema(db, c)
 		if err != nil {
@@ -24,6 +25,7 @@ func ExampleDB_Model(c *gin.Context) {
 			//panic(err)
 		}
 	*/
+	/*
 	user1 := &User{
 		Name:   "admin",
 		Emails: "admin2@admin",
@@ -59,7 +61,7 @@ func ExampleDB_Model(c *gin.Context) {
 }
 
 func createSchema(db *pg.DB, c *gin.Context) error {
-	for _, model := range []interface{}{(*User)(nil)} {
+	for _, model := range []interface{}{(*Turno)(nil)} {
 		err := db.CreateTable(model, &orm.CreateTableOptions{
 			Temp: false,
 		})
@@ -69,3 +71,4 @@ func createSchema(db *pg.DB, c *gin.Context) error {
 	}
 	return nil
 }
+*/

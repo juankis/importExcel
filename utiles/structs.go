@@ -2,15 +2,17 @@ package utiles
 
 import "fmt"
 
-type Turno struct {
-	Idcita       int64
-	Idtipodoc    string
+type Sigeci struct {
+	tableName          struct{} `sql:"sigeci"`
+	Idcita       int `sql:",pk"`
+	Idtipodoc    int32
 	Numdoc       string
 	Nombre       string
 	Apellido     string
-	Nacionalidad string
+	Fecha 			 string
+	Hora				 string
 }
 
-func (t Turno) String() string {
-	return fmt.Sprintf("Turno<%d %s %v %d %s %s>", t.Idcita, t.Idtipodoc, t.Numdoc, t.Nombre, t.Apellido, t.Nacionalidad)
+func (t Sigeci) String() string {
+	return fmt.Sprintf("Sigeci<%d %s %v %d %s %s>", t.Idcita, t.Idtipodoc, t.Numdoc, t.Nombre, t.Apellido)
 }
