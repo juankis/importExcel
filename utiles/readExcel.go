@@ -29,10 +29,10 @@ func ImportExcel(c *gin.Context) {
 	path := moverArchivo(c)
 	c.String(http.StatusOK, "path: %s", path)
 	db := pg.Connect(&pg.Options{
-		Addr:     "localhost:5432",
-		User:     "postgres",
-		Password: "root",
-		Database: "example",
+		Addr:     "192.168.76.233:5432",
+		User:     "dgevyl",
+		Password: "qwerty",
+		Database: "dgevyl",
 	})
 	defer db.Close()
 
@@ -70,15 +70,16 @@ func ImportExcel(c *gin.Context) {
 					idtipodoc = 3
 				}
 				fechaCita := strings.Split(a[11], " ")
-
+				fechaCitaEditada := strings.Split(fechaCita[0], "/")
 				new_sigeci := &Sigeci{
 					Idcita:    idcita,
 					Idtipodoc: idtipodoc,
 					Numdoc:    a[4],
 					Nombre:    datosPersonales[1],
 					Apellido:  datosPersonales[0],
-					Fecha:     fechaCita[0],
+					Fecha:     fechaCitaEditada[2]+"-"+fechaCitaEditada[1]+"-"+fechaCitaEditada[0],
 					Hora:      fechaCita[1],
+					Metadata:  `{"nacionalidad":"Argentina"}`,
 				}
 
 				sigeci := &Sigeci{Idcita: new_sigeci.Idcita}

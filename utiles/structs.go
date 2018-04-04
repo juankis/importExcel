@@ -11,6 +11,7 @@ type Sigeci struct {
 	Apellido  string
 	Fecha     string
 	Hora      string
+	Metadata  string
 }
 
 func (t Sigeci) String() string {
