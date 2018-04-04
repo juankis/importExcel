@@ -3,14 +3,14 @@ package utiles
 import "fmt"
 
 type Sigeci struct {
-	tableName          struct{} `sql:"sigeci"`
-	Idcita       int `sql:",pk"`
-	Idtipodoc    int32
-	Numdoc       string
-	Nombre       string
-	Apellido     string
-	Fecha 			 string
-	Hora				 string
+	tableName struct{} `sql:"sigeci"`
+	Idcita    int      `sql:",pk"`
+	Idtipodoc int
+	Numdoc    string
+	Nombre    string
+	Apellido  string
+	Fecha     string
+	Hora      string
 }
 
 func (t Sigeci) String() string {

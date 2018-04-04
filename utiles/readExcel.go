@@ -5,13 +5,14 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tealeg/xlsx"
 	"github.com/go-pg/pg"
+	"github.com/tealeg/xlsx"
 )
 
-func moverArchivo(c *gin.Context) string{
+func moverArchivo(c *gin.Context) string {
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
@@ -25,18 +26,16 @@ func moverArchivo(c *gin.Context) string{
 }
 
 func ImportExcel(c *gin.Context) {
-	path:= moverArchivo(c)
-	c.String(http.StatusOK, "path: %s",path)
+	path := moverArchivo(c)
+	c.String(http.StatusOK, "path: %s", path)
 	db := pg.Connect(&pg.Options{
-		Addr:     "192.168.76.233:5432",
-		User:     "dgevyl",
-		Password: "qwerty",
-		Database: "dgevyl",
+		Addr:     "localhost:5432",
+		User:     "postgres",
+		Password: "root",
+		Database: "example",
 	})
 	defer db.Close()
 
-	//excelFileName := "/home/jojeda/go/src/github.com/juankis/importExcel/reporte_test.xls"
-	//excelFileName := "/home/jojeda/Descargas/testfile.xlsx"
 	excelFileName := path
 	xlFile, err := xlsx.OpenFile(excelFileName)
 	if err != nil {
@@ -45,10 +44,9 @@ func ImportExcel(c *gin.Context) {
 
 	for _, sheet := range xlFile.Sheets {
 		var row_cont int = 0
-
 		for _, row := range sheet.Rows {
 			c.String(http.StatusOK, "ROW : %s", strconv.Itoa(row_cont))
-			//if row_cont > 0 {
+			if row_cont > 0 {
 				var a [100]string
 				var contador int = 0
 				for _, cell := range row.Cells {
@@ -56,37 +54,50 @@ func ImportExcel(c *gin.Context) {
 					contador++
 				}
 
-				entero,err := strconv.Atoi(a[0])
-				//entero := uint64(entero)
+				idcita, err := strconv.Atoi(a[0])
+				if err != nil {
+					c.String(http.StatusOK, "error convirtiendo entero : %s", err)
+				}
+
+				datosPersonales := strings.Split(a[2], ",")
+				idtipodoc := 0
+				switch a[3] {
+				case "DNI":
+					idtipodoc = 1
+				case "DNI_EXT":
+					idtipodoc = 2
+				case "PASAPORTE":
+					idtipodoc = 3
+				}
+				fechaCita := strings.Split(a[11], " ")
+
 				new_sigeci := &Sigeci{
-					Idcita:       entero,
-					Idtipodoc:    1,
-					Numdoc:       a[4],
-					Nombre:       a[2],
-					Apellido:     a[2],
-					Fecha:				"2018-02-02",
-					Hora:					"10:00:00",
+					Idcita:    idcita,
+					Idtipodoc: idtipodoc,
+					Numdoc:    a[4],
+					Nombre:    datosPersonales[1],
+					Apellido:  datosPersonales[0],
+					Fecha:     fechaCita[0],
+					Hora:      fechaCita[1],
 				}
 
 				sigeci := &Sigeci{Idcita: new_sigeci.Idcita}
 				err = db.Select(sigeci)
 				if err != nil {
 					c.String(http.StatusBadRequest, fmt.Sprintf("Error selected : %s Idcita: %v", err, sigeci.Idcita))
-					//panic(err)
 				}
-				//numero, err := strconv.ParseInt(sigeci.Idcita, 64, 64)
-				panic(sigeci)
-				if sigeci != nil{
+
+				if sigeci.Fecha != "" {
 					c.String(http.StatusBadRequest, fmt.Sprintf("El turno ya existe : %s", sigeci.Idcita))
-				}else{
+				} else {
 					err := db.Insert(new_sigeci)
 					if err != nil {
 						c.String(http.StatusBadRequest, fmt.Sprintf("Error insertando: %s", err))
-					}else{
+					} else {
 						c.String(http.StatusBadRequest, fmt.Sprintf("insertado"))
 					}
 				}
-			//}
+			}
 			row_cont++
 		}
 	}
