@@ -65,9 +65,15 @@ func ImportExcel(c *gin.Context) {
 				case "DNI":
 					idtipodoc = 1
 				case "DNI_EXT":
-					idtipodoc = 2
+					idtipodoc = 5
 				case "PASAPORTE":
+					idtipodoc = 6
+				case "LE":
+					idtipodoc = 2
+				case "LC":
 					idtipodoc = 3
+				case "CI":
+					idtipodoc = 4
 				}
 				fechaCita := strings.Split(a[11], " ")
 				fechaCitaEditada := strings.Split(fechaCita[0], "/")
